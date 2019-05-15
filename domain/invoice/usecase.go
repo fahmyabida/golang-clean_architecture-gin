@@ -6,6 +6,5 @@ import (
 )
 
 type Usecase interface {
-	GetDataInvoiceMenu(ctx context.Context, idOrder int)(*models.InvoiceMenuPayload, error)
-	GetDataInvoicePayment(ctx context.Context, idOrder int)(*models.InvoicePaymentPayload, error)
+	GetInvoicePayment(ctx context.Context, idOrder int)(*models.InvoicePaymentPayload, error)
 }

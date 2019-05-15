@@ -7,10 +7,10 @@ import (
 	_orderRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/order/repository"
 	_jenisPesananRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/jenis_pesanan/repository"
 	_menuRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/menu/repository"
-	_pemesanUsecase "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/usecase"
 	_invoiceUsecase "github.com/fahmyabida/golang-clean_architecture-gin/domain/invoice/usecase"
-	_pemesanHttpDeliver "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/delivery/http"
+	_workOrderUsecase "github.com/fahmyabida/golang-clean_architecture-gin/domain/work_order/usecase"
 	_invoiceHttpDeliver "github.com/fahmyabida/golang-clean_architecture-gin/domain/invoice/delivery/http"
+	_workOrderHttpDeliver "github.com/fahmyabida/golang-clean_architecture-gin/domain/work_order/delivery/http"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/spf13/viper"
@@ -64,10 +64,10 @@ func main() {
 	pRepo 	:= _pemesanRepo.NewPemesanRepository(dbConn)
 
 	iU := _invoiceUsecase.NewInvoiceMenuUsecase(jpRepo,mRepo,oRepo,pRepo,timeoutContext)
-	pU := _pemesanUsecase.NewPemesanUsecase(pRepo, timeoutContext)
+	woU := _workOrderUsecase.NewWorkOrderUsecase(jpRepo,mRepo,oRepo,pRepo,timeoutContext)
 
-	_pemesanHttpDeliver.NewPemesanHttpHandler(engine, pU)
 	_invoiceHttpDeliver.NewInvoiceHttpHandler(engine, iU)
+	_workOrderHttpDeliver.NewWorkOrderHttpHandler(engine, woU)
 
 	engine.Run(viper.GetString("server.address"))
 }

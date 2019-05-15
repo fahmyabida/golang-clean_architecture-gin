@@ -25,17 +25,6 @@ func NewInvoiceMenuUsecase(jpR jenis_pesanan.Repository, mR menu.Repository, oR 
 	}
 }
 
-func (u *invoiceUsecase) toPayloadInvoiceMenu(pemesan *models.Pemesan, jPesanan *models.JenisPesanan, menu *models.Menu, order *models.Order) (*models.InvoiceMenuPayload, error) {
-	tmp := &models.InvoiceMenuPayload{
-		NamaPemesan		: pemesan.Nama,
-		NoHp			: pemesan.NoHp,
-		JenisPesanan	: jPesanan.Nama,
-		IsiPesanan		: menu.Isi,
-		JumlahPesanan	: order.Total,
-		TanggalKirim	: order.TanggalDikirim.String(),
-	}
-	return tmp,nil
-}
 
 func (u *invoiceUsecase) toPayloadInvoicePayment(pemesan *models.Pemesan, jPesanan *models.JenisPesanan, menu *models.Menu, order *models.Order) (*models.InvoicePaymentPayload, error) {
 	tmp := &models.InvoicePaymentPayload{
@@ -48,17 +37,7 @@ func (u *invoiceUsecase) toPayloadInvoicePayment(pemesan *models.Pemesan, jPesan
 	return tmp, nil
 }
 
-func (u *invoiceUsecase) GetDataInvoiceMenu(ctx context.Context, idOrder int) (*models.InvoiceMenuPayload, error) {
-	order, err 		:= u.orderRepo.GetObjectById(ctx, idOrder); if err!=nil{return nil, err}
-	pemesan, err 	:= u.pemesanRepo.GetObjectById(ctx, order.IdPemesan); if err!=nil{return nil, err}
-	menu, err 		:= u.menuRepo.GetObjectById(ctx, order.IdMenu); if err!=nil{return nil, err}
-	jPesan, err 	:= u.jPesanRepo.GetObjectById(ctx, menu.IdJenisPesanan); if err!=nil{return nil, err}
-	res, err		:= u.toPayloadInvoiceMenu(pemesan,jPesan,menu,order); if err!=nil{return nil, err}
-	return res, nil
-}
-
-
-func (u *invoiceUsecase) GetDataInvoicePayment(ctx context.Context, idOrder int) (*models.InvoicePaymentPayload, error) {
+func (u *invoiceUsecase) GetInvoicePayment(ctx context.Context, idOrder int) (*models.InvoicePaymentPayload, error) {
 	order, err 		:= u.orderRepo.GetObjectById(ctx, idOrder); if err!=nil{return nil, err}
 	pemesan, err 	:= u.pemesanRepo.GetObjectById(ctx, order.IdPemesan); if err!=nil{return nil, err}
 	menu, err 		:= u.menuRepo.GetObjectById(ctx, order.IdMenu); if err!=nil{return nil, err}

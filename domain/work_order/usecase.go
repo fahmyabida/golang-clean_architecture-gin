@@ -1,4 +1,4 @@
-package pemesan
+package work_order
 
 import (
 	"context"
@@ -6,5 +6,5 @@ import (
 )
 
 type Usecase interface {
-	GetPemesan(ctx context.Context, id int) (*models.Pemesan, error)
+	GetWorkOrder(ctx context.Context, idOrder int)(*models.WorkOrderPayload, error)
 }
