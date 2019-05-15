@@ -5,9 +5,9 @@ import (
 	"fmt"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	_mahasiswaRepo "github.com/me/golang-clean_architecture-gin_gonic/mahasiswa/repository"
-	_mahasiswaUsecase "github.com/me/golang-clean_architecture-gin_gonic/mahasiswa/usecase"
-	_mahasiswaHttpDeliver "github.com/me/golang-clean_architecture-gin_gonic/mahasiswa/delivery/http"
+	_pemesanRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/repository"
+	_pemesanUsecase "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/usecase"
+	_pemesanHttpDeliver "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/delivery/http"
 	"github.com/spf13/viper"
 	"log"
 	"net/url"
@@ -53,9 +53,9 @@ func main() {
 	//e.Use(middL.CORS)
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
-	mhsRepo := _mahasiswaRepo.NewMysqlArticleRepository(dbConn)
-	mhsU := _mahasiswaUsecase.NewArticleUsecase(mhsRepo, timeoutContext)
-	_mahasiswaHttpDeliver.NewMahasiswaHttpHandler(engine, mhsU)
+	pmsanRepo := _pemesanRepo.NewMysqlArticleRepository(dbConn)
+	mhsU := _pemesanUsecase.NewPemesanUsecase(pmsanRepo, timeoutContext)
+	_pemesanHttpDeliver.NewPemesanHttpHandler(engine, mhsU)
 
 	engine.Run(viper.GetString("server.address"))
 }
