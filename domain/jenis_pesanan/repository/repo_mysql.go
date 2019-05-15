@@ -3,35 +3,34 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan"
+	"github.com/fahmyabida/golang-clean_architecture-gin/domain/jenis_pesanan"
 	"github.com/fahmyabida/golang-clean_architecture-gin/models"
 	"github.com/fahmyabida/golang-clean_architecture-gin/utils"
 	"github.com/sirupsen/logrus"
 )
 
-type pemesanRepo struct {
+type jenisPesananRepo struct {
 	Conn *sql.DB
 }
 
 
-func NewPemesanRepository(Conn *sql.DB) pemesan.Repository{
-	return &pemesanRepo{Conn}
+func NewJenisPesananRepository(Conn *sql.DB) jenis_pesanan.Repository{
+	return &jenisPesananRepo{Conn}
 }
 
-func (m *pemesanRepo) fetch(ctx context.Context, query string, args ...interface{}) ([]*models.Pemesan, error) {
+func (m *jenisPesananRepo) fetch(ctx context.Context, query string, args ...interface{}) ([]*models.JenisPesanan, error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
 		logrus.Error(err)
 		return nil, err
 	}
 	defer rows.Close()
-	result := make([]*models.Pemesan, 0)
+	result := make([]*models.JenisPesanan, 0)
 	for rows.Next() {
-		row := new(models.Pemesan)
+		row := new(models.JenisPesanan)
 		err = rows.Scan(
 			&row.Id,
 			&row.Nama,
-			&row.NoHp,
 		)
 		if err != nil {
 			logrus.Error(err)
@@ -42,17 +41,16 @@ func (m *pemesanRepo) fetch(ctx context.Context, query string, args ...interface
 	return result, nil
 }
 
-func (r *pemesanRepo) GetObjectById(ctx context.Context, id int) (*models.Pemesan, error) {
+func (r *jenisPesananRepo) GetObjectById(ctx context.Context, id int) (*models.JenisPesanan, error) {
 	query := `SELECT
 				id,
-				nama,
-				no_hp
-			FROM pemesan WHERE id=?`
+				nama
+			FROM jenis_pesanan WHERE id=?`
 	list, err := r.fetch(ctx, query, id)
 	if err != nil {
 		return nil, err
 	}
-	obj := &models.Pemesan{}
+	obj := &models.JenisPesanan{}
 	if len(list) > 0 {
 		obj = list[0]
 	} else {return nil, utils.ErrNotFound}

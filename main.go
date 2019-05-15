@@ -3,11 +3,16 @@ package main
 import (
 	"database/sql"
 	"fmt"
+	_pemesanRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/repository"
+	_orderRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/order/repository"
+	_jenisPesananRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/jenis_pesanan/repository"
+	_menuRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/menu/repository"
+	_pemesanUsecase "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/usecase"
+	_invoiceUsecase "github.com/fahmyabida/golang-clean_architecture-gin/domain/invoice/usecase"
+	_pemesanHttpDeliver "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/delivery/http"
+	_invoiceHttpDeliver "github.com/fahmyabida/golang-clean_architecture-gin/domain/invoice/delivery/http"
 	"github.com/gin-gonic/gin"
 	_ "github.com/go-sql-driver/mysql"
-	_pemesanRepo "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/repository"
-	_pemesanUsecase "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/usecase"
-	_pemesanHttpDeliver "github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan/delivery/http"
 	"github.com/spf13/viper"
 	"log"
 	"net/url"
@@ -53,9 +58,16 @@ func main() {
 	//e.Use(middL.CORS)
 	timeoutContext := time.Duration(viper.GetInt("context.timeout")) * time.Second
 
-	pmsanRepo := _pemesanRepo.NewMysqlArticleRepository(dbConn)
-	mhsU := _pemesanUsecase.NewPemesanUsecase(pmsanRepo, timeoutContext)
-	_pemesanHttpDeliver.NewPemesanHttpHandler(engine, mhsU)
+	jpRepo 	:= _jenisPesananRepo.NewJenisPesananRepository(dbConn)
+	mRepo 	:= _menuRepo.NewMenuRepository(dbConn)
+	oRepo 	:= _orderRepo.NewOrderRepository(dbConn)
+	pRepo 	:= _pemesanRepo.NewPemesanRepository(dbConn)
+
+	iU := _invoiceUsecase.NewInvoiceMenuUsecase(jpRepo,mRepo,oRepo,pRepo,timeoutContext)
+	pU := _pemesanUsecase.NewPemesanUsecase(pRepo, timeoutContext)
+
+	_pemesanHttpDeliver.NewPemesanHttpHandler(engine, pU)
+	_invoiceHttpDeliver.NewInvoiceHttpHandler(engine, iU)
 
 	engine.Run(viper.GetString("server.address"))
 }

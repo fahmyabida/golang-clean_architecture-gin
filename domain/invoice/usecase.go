@@ -1,7 +1,11 @@
 package invoice
 
-import "github.com/fahmyabida/golang-clean_architecture-gin/models"
+import (
+	"context"
+	"github.com/fahmyabida/golang-clean_architecture-gin/models"
+)
 
 type Usecase interface {
-	GetDataInvoice()(*models.Invoice, error)
+	GetDataInvoiceMenu(ctx context.Context, idOrder int)(*models.InvoiceMenuPayload, error)
+	GetDataInvoicePayment(ctx context.Context, idOrder int)(*models.InvoicePaymentPayload, error)
 }

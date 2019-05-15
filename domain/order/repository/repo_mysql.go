@@ -3,35 +3,38 @@ package repository
 import (
 	"context"
 	"database/sql"
-	"github.com/fahmyabida/golang-clean_architecture-gin/domain/pemesan"
+	"github.com/fahmyabida/golang-clean_architecture-gin/domain/order"
 	"github.com/fahmyabida/golang-clean_architecture-gin/models"
 	"github.com/fahmyabida/golang-clean_architecture-gin/utils"
 	"github.com/sirupsen/logrus"
 )
 
-type pemesanRepo struct {
+type orderRepo struct {
 	Conn *sql.DB
 }
 
 
-func NewPemesanRepository(Conn *sql.DB) pemesan.Repository{
-	return &pemesanRepo{Conn}
+func NewOrderRepository(Conn *sql.DB) order.Repository{
+	return &orderRepo{Conn}
 }
 
-func (m *pemesanRepo) fetch(ctx context.Context, query string, args ...interface{}) ([]*models.Pemesan, error) {
+func (m *orderRepo) fetch(ctx context.Context, query string, args ...interface{}) ([]*models.Order, error) {
 	rows, err := m.Conn.QueryContext(ctx, query, args...)
 	if err != nil {
 		logrus.Error(err)
 		return nil, err
 	}
 	defer rows.Close()
-	result := make([]*models.Pemesan, 0)
+	result := make([]*models.Order, 0)
 	for rows.Next() {
-		row := new(models.Pemesan)
+		row := new(models.Order)
 		err = rows.Scan(
 			&row.Id,
-			&row.Nama,
-			&row.NoHp,
+			&row.IdMenu,
+			&row.IdPemesan,
+			&row.Total,
+			&row.TanggalPesan,
+			&row.TanggalDikirim,
 		)
 		if err != nil {
 			logrus.Error(err)
@@ -42,17 +45,20 @@ func (m *pemesanRepo) fetch(ctx context.Context, query string, args ...interface
 	return result, nil
 }
 
-func (r *pemesanRepo) GetObjectById(ctx context.Context, id int) (*models.Pemesan, error) {
+func (r *orderRepo) GetObjectById(ctx context.Context, id int) (*models.Order, error) {
 	query := `SELECT
 				id,
-				nama,
-				no_hp
-			FROM pemesan WHERE id=?`
+				id_menu,
+				id_pemesan,
+				total,
+				tanggal_pesan,
+				tanggal_dikirim
+			FROM order_pesanan WHERE id=?`
 	list, err := r.fetch(ctx, query, id)
 	if err != nil {
 		return nil, err
 	}
-	obj := &models.Pemesan{}
+	obj := &models.Order{}
 	if len(list) > 0 {
 		obj = list[0]
 	} else {return nil, utils.ErrNotFound}

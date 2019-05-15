@@ -1,9 +1,12 @@
 package models
 
-type order struct {
-	Id				int		`json:"id"`
-	Id_pemesan		int	    `json:"id_pemesan"`
-	Jenis_pesanan	string	`json:"jenis_pesanan"`
-	Jumlah			int		`json:"jumlah"`
+import "time"
 
+type Order struct {
+	Id				int			`json:"id"`
+	IdMenu			int			`json:"id_menu"`
+	IdPemesan		int	    	`json:"id_pemesan"`
+	Total			int			`json:"total"`
+	TanggalPesan	time.Time	`json:"tanggal_pesan"`
+	TanggalDikirim	time.Time	`json:"tanggal_dikirim"`
 }
