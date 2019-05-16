@@ -27,8 +27,8 @@ func (h *httpWorkOrderHandler) GetWorkOrder(c *gin.Context){
 	idOrder, err := strconv.Atoi(idParams); if err!=nil {
 		c.JSON(http.StatusBadRequest, utils.Error(errors.New("Bad Request"), gin.H{})); return}
 	ctx := c.Request.Context(); if ctx == nil {ctx = context.Background()}
-	pemesan, err := h.woUsecase.GetWorkOrder(ctx, idOrder); if err != nil {
+	workOrder, err := h.woUsecase.GetWorkOrder(ctx, idOrder); if err != nil {
 		c.JSON(http.StatusOK, utils.Error(err, gin.H{})); return
 	}
-	c.JSON(http.StatusOK, pemesan); return
+	c.JSON(http.StatusOK, workOrder); return
 }
